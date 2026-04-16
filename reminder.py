@@ -1,31 +1,52 @@
-import webbrowser
+import schedule
 import time
-import schedule # 需要 pip install schedule
+import requests
 from datetime import datetime
 
-def job():
-    keyword = "drinking hot water health benefits news"
-    # 也可以增加中文搜索
-    print(f"[{datetime.now()}] 🔔 提醒时间到！该喝热水了。")
-    print("[*] 正在为你获取全球今日热水资讯...")
-    
-    urls = [
-        f"https://www.google.com/search?q={keyword}&tbs=qdr:d", # 搜索过去24小时
-        f"https://www.baidu.com/s?wd=多喝热水+新闻&gpc=stf",
-        "https://news.google.com/search?q=hot%20water%20health"
-    ]
-    
-    for url in urls:
-        webbrowser.open(url)
-    
-    print("✅ 任务完成。记得水温保持在 40°C 左右哦！")
+# --- 配置区 ---
+PUSHDEER_KEY = "你的PUSHDEER_KEY"  # 在 PushDeer App 免费获取
+HOT_WATER_API = "https://api2.pushdeer.com/message/push"
 
-# 设置每天上午 10:30 执行
-schedule.every().day.at("10:30").do(job)
+def fetch_hot_water_intel():
+    """模拟抓取今日热水全球情报"""
+    # 实际应用中，这里可以接入更复杂的爬虫逻辑
+    today = datetime.now().strftime('%Y-%m-%d')
+    intel = [
+        "· [科学] 研究显示 40°C 温水对食道粘膜最为友好。",
+        "· [趋势] 社交媒体上关于 'Hot Water Therapy' 的讨论热度上升 15%。",
+        "· [警示] 提醒：饮水超过 65°C 会增加 2A 类致癌风险，请务必晾凉！"
+    ]
+    return f"📅 **日期：{today}**\n\n" + "\n".join(intel)
+
+def send_push():
+    content = fetch_hot_water_intel()
+    title = "🍵 您的今日“多喝热水”情报已送达"
+    
+    payload = {
+        "pushkey": PUSHDEER_KEY,
+        "text": title,
+        "desp": content,
+        "type": "markdown"
+    }
+    
+    try:
+        response = requests.get(HOT_WATER_API, params=payload)
+        if response.status_code == 200:
+            print(f"[{datetime.now()}] 推送成功！记得喝水。")
+        else:
+            print(f"[{datetime.now()}] 推送失败，状态码：{response.status_code}")
+    except Exception as e:
+        print(f"❌ 网络异常: {e}")
+
+# --- 调度区 ---
+# 每天早上 9:30 给自己一个硬核的关心
+schedule.every().day.at("09:30").do(send_push)
 
 if __name__ == "__main__":
-    print("🚀 自动化提醒脚本已启动，保持后台运行中...")
-    print("💡 提示：按 Ctrl+C 可以停止。")
+    print("🛰️ 多喝热水·全球指挥中心（本地部署版）已启动...")
+    print(f"📍 目标设备：龙芯/Hermes Server | 推送通道：PushDeer")
+    # 启动时先推个测试，确认通路正常
+    # send_push() 
     while True:
         schedule.run_pending()
-        time.sleep(60) # 每分钟检查一次
+        time.sleep(60)
