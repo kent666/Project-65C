@@ -1,4 +1,4 @@
-![Daily Update](https://github.com/你的用户名/仓库名/actions/workflows/daily_hot_water.yml/badge.svg)
+[Daily Update](https://github.com/你的用户名/仓库名/actions/workflows/daily_hot_water.yml/badge.svg)
 🌐 Project Vision / 项目愿景
 “让关怀不再是逻辑终点，而是探索的起点。”
 在中文语境中，“多喝热水”曾被误解为沟通的终结、情感的敷衍。我们认为，这句简单的话背后潜藏着人类数千年来对生命之源（H_2O）的热力学追求。
